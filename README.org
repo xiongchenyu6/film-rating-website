@@ -1,0 +1,4 @@
+* film-rating-website
+
+** Porpuse
+This is a tutorial project for self learning the Functor Monad Applicative Alternative type class.
