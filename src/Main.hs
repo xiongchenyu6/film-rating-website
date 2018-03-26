@@ -216,14 +216,13 @@ loadDb = do
   runParser (many filmParser) <$> hGetContents fileHandle
 
 filmParser :: Parser Film
-filmParser = do
-  t <- endBy (qoutesPara (many $ notOneOf "\"")) (char '\n')
-  d <- endBy (qoutesPara (many $ notOneOf "\"")) (char '\n')
-  y <- endBy number (char '\n')
-  l <- endBy (sepBy (qoutesPara name) (reserved ", ") <|> pure []) (char '\n')
-  dl <- endBy (sepBy (qoutesPara name) (reserved ", ") <|> pure []) (char '\n')
-  char '\n' <|> pure '\n'
-  return $ Film t d y l dl
+filmParser = Film <$>
+  endBy (qoutesPara (many $ notOneOf "\"")) (char '\n') <*>
+  endBy (qoutesPara (many $ notOneOf "\"")) (char '\n') <*>
+  endBy number (char '\n') <*>
+  endBy (sepBy (qoutesPara name) (reserved ", ") <|> pure []) (char '\n') <*>
+  endBy (sepBy (qoutesPara name) (reserved ", ") <|> pure []) (char '\n') <*
+  (char '\n' <|> pure '\n')
 
 save :: [Film] -> IO()
 save f = writeFile "testDatabase.txt" $ (concat $ intersperse "\n\n" (show <$> f)) ++ "\n"
